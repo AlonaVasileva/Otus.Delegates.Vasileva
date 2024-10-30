@@ -1,25 +1,23 @@
-﻿using System;
+﻿using Otus.Delegates.Vasileva;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Otus.Delegates.Vasileva
 {
-    internal class FileFinder
+    public class FileFinder
     {
         public event EventHandler<FileArgs> FileFound;
 
-        public void SearchFiles(string directory)
+        public void FindFiles(string directoryPath, Func<bool> shouldContinue)
         {
-            if (!Directory.Exists(directory))
-                throw new DirectoryNotFoundException($"Directory '{directory}' not found.");
-
-            var files = Directory.GetFiles(directory);
-            foreach (var file in files)
+            foreach (var file in Directory.GetFiles(directoryPath))
             {
-                var args = new FileArgs { FileName = file };
-                OnFileFound(args);
-                // было ли отменено дальнейшее выполнение
-                if (args.Cancel)
-                    break; 
+                if (!shouldContinue())
+                {
+                    break;
+                }
+                OnFileFound(new FileArgs(file));
             }
         }
 
@@ -27,6 +25,10 @@ namespace Otus.Delegates.Vasileva
         {
             FileFound?.Invoke(this, e);
         }
-
     }
 }
+
+
+
+
+

@@ -1,38 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Otus.Delegates.Vasileva
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            var finder = new FileFinder();
-            finder.FileFound += Finder_FileFound;
-
-            // Пункт 4: Пример поиска файлов в текущем каталоге
-            finder.SearchFiles(Directory.GetCurrentDirectory());
-
-            // Пункт 1: Пример использования GetMax
-            var numbers = new List<ExampleClass>
+            var fileFinder = new FileFinder();
+            fileFinder.FileFound += (sender, e) =>
             {
-                new ExampleClass { Value = 1 },
-                new ExampleClass { Value = 3 },
-                new ExampleClass { Value = 2 }
+                Console.WriteLine($"File found: {e.FileName}");
             };
 
-            var maxItem = numbers.GetMax(item => item.Value);
-            Console.WriteLine($"Max Value: {maxItem.Value}");
-        }
+            //  делегат для отмены поиска
+            bool shouldContinue = true;
+            fileFinder.FindFiles("C:\\Users\\vasilevaea\\source\\repos\\Otus.Delegates.Vasileva\\Test", () => shouldContinue);
 
-        private static void Finder_FileFound(object sender, FileArgs e)
-        {
-            Console.WriteLine($"File found: {e.FileName}");
-            if (e.FileName.EndsWith(".txt")) 
-            {
-                e.Cancel = true; 
-            }
+            // Для тестирования функции расширения
+            var items = new List<MyClass> { new MyClass { Value = 10 }, new MyClass { Value = 20 } };
+            var maxItem = items.GetMax(item => item.Value);
+            Console.WriteLine($"Max item: {maxItem.Value}");
+            Console.ReadKey();
         }
     }
 }

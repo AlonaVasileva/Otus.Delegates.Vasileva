@@ -4,7 +4,11 @@ namespace Otus.Delegates.Vasileva
 {
     public class FileArgs : EventArgs
     {
-        public string FileName { get; set; }
-        public bool Cancel { get; set; } // для отмены поиска
+        public string FileName { get; }
+
+        public FileArgs(string fileName)
+        {
+            FileName = fileName;
+        }
     }
 }
